@@ -151,10 +151,9 @@ def lhs_rhs(D, L):
 	return lhs, rhs, inn, D, L
 
 
-def plot_lhs_rhs(lhs, rhs, inn, D, L):
+def plot_lhs_rhs(D, L):
 	
-	fig, ax = plt.subplots()
-	plt.xlabel
+	lhs, rhs, inn, D, L = lhs_rhs(D, L)
 	plt.plot(inn, rhs.real, label='rhs real')
 	plt.plot(inn, lhs.real, 'gx', label = 'lhs real')
 	plt.plot(inn, lhs.imag, 'bo', label = 'lhs imaginary')
@@ -310,6 +309,20 @@ def plot_energy(inn, D, L):
 	plt.legend()
 	plt.show()
 
+def plot_diffraction(inn, D, L):
+	xm, xp, ym, yp, xbar, ybar, D, L = discretize_geometry(D, L)
+	phiD, a, b = energy_calculations(D, L, 0.9)
+	plt.plot(inn, phiD.real, label=r'$Re(\phi_D$')
+	plt.plot(inn, phiD.imag, label=r'$Im(\phi_D)$')
+	plt.ylabel(r'$\phi_D$')
+	plt.xlabel('m')
+	plt.title(f'Diffraction potential for L = {L} and D = {D}')
+	plt.legend()
+	plt.show()
+
+
+
+
 def plot_exi_force(inn, D, L):
 	nu = np.linspace(0, 2, num=100, endpoint=False)[1:]
 	X2_list = []
@@ -442,16 +455,16 @@ def plot_response_freq3(inn, D, L):
 
 if __name__ == "__main__":
 
-	
+	#plot_lhs_rhs(1, 0.1)
 	phi2, inn, sum_ff22, sum_AM2, sum_AP2, v1H = calculate_phi(1, 0.1, 0.9)
 	#plot_phi(inn, phi2, 1, 0.5)
 	#plot_energy(inn, 1, 0.1)
 	#plot_exi_force(inn, 1, 0.1)
-
+	plot_diffraction(inn, 1, 0.1)
 	#plot_haskind_FK_and_direct_pressure(inn, 1, 0.1)
 	#plot_phi(inn, phi2, 1, 0.1)
 	#plot_resonance_freq(inn, 1, 0.1)
-	plot_response_freq3(inn, 1, 0.1)
+	#plot_response_freq3(inn, 1, 0.1)
 
 
 
