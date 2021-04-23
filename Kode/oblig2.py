@@ -236,10 +236,10 @@ def calculate_phi(D, L, nu):
 	sum_AM2 = sum(AM2)
 	sum_AP2 = sum(AP2)
 
-	dampingb22 = 0.5*(sum_AM2**2 + sum_AP2**2)
+	dampingb22 = 0.5*(sum_AM2*np.conj(sum_AM2) + sum_AP2*np.conj(sum_AP2))
 	v1H = sum(-complex(0, 1)*(phi0*n2 - phi2*phi0n)*ds)
 
-	return phi2, inn, sum_ff22, sum_AM2, sum_AP2, v1H
+	return phi2, inn, sum_ff22, sum_AM2, sum_AP2, v1H, dampingb22
 
 
 def energy_calculations(D, L, nu):
@@ -295,15 +295,17 @@ def plot_energy(inn, D, L):
 	nu = np.linspace(0, 2, num=100, endpoint=False)[1:]
 	sff2_list = []
 	X2_ = []
+	b223_energy = []
 	for _nu_ in nu:
-		a, b, sff2, c, d, e = calculate_phi(D, L, _nu_)
+		a, b, sff2, AM2, AP2, e, dampingb22 = calculate_phi(D, L, _nu_)
 		sff2_list.append(sff2)
-		a, b, X2 = energy_calculations(D, L)
-		X2_.append(X2)
-	b223_energy = 4*np.square(np.exp(-nu*D)*np.sin(nu*L/2)/nu)
+		b223_energy.append(dampingb22)
+		#a, b, X2 = energy_calculations(D, L, _nu_)
+		#X2_.append(X2)
+	
 	plt.plot(nu, np.real(sff2_list), label=r'$\frac{a_{22}}{\rho D^2}$')
-	plt.plot(nu, -np.imag(sff2_list), label=r'$\frac{b_{22}}{\rho \omega D^2}$')
-	plt.plot(nu, b223_energy, label=r'$\frac{b_{22}}{\rho \omega D^2}$' + 'energy')
+	plt.plot(nu, -np.imag(sff2_list),'*', label=r'$\frac{b_{22}}{\rho \omega D^2}$')
+	plt.plot(nu, np.real(b223_energy), '--', label=r'$\frac{b_{22}}{\rho \omega D^2}$' + 'energy')
 	plt.xlabel(r'$\frac{\omega^2 D}{g}$')
 	plt.title(f'Added mass and damping for L = {L} and D = {D}')
 	plt.legend()
@@ -456,21 +458,12 @@ def plot_response_freq3(inn, D, L):
 if __name__ == "__main__":
 
 	#plot_lhs_rhs(1, 0.1)
-	phi2, inn, sum_ff22, sum_AM2, sum_AP2, v1H = calculate_phi(1, 0.1, 0.9)
+	phi2, inn, sum_ff22, sum_AM2, sum_AP2, v1H, dampingb22 = calculate_phi(1, 0.1, 0.9)
 	#plot_phi(inn, phi2, 1, 0.5)
-	#plot_energy(inn, 1, 0.1)
+	plot_energy(inn, 1, 0.1)
 	#plot_exi_force(inn, 1, 0.1)
-	plot_diffraction(inn, 1, 0.1)
+	#plot_diffraction(inn, 1, 0.1)
 	#plot_haskind_FK_and_direct_pressure(inn, 1, 0.1)
 	#plot_phi(inn, phi2, 1, 0.1)
 	#plot_resonance_freq(inn, 1, 0.1)
 	#plot_response_freq3(inn, 1, 0.1)
-
-
-
-
-
-	#lhs, rhs, inn, D, L = lhs_rhs(1, 1)
-	#calculate_phi()
-	#plot_lhs_rhs(lhs, rhs, inn, D, L, phi2)
-	#plot_phi(inn, phi2)
